@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta charset="utf-8">
+<title>Idle Pickaxe Miner — Deluxe</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --bg:#0b1020;
+    --panel: rgba(255,255,255,0.04);
+    --accent:#ffb86b;
+    --muted:#9aa4b2;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  body{background:linear-gradient(180deg,#081021,#0b1020);color:#e6eef8;overflow:hidden;}
+  #gameWrap{position:fixed;inset:0;display:flex;flex-direction:column}
+  canvas{flex:1;display:block;width:100%;height:100%}
+  #hud{
+    position:fixed;left:12px;top:12px;background:var(--panel);padding:10px;border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.5);backdrop-filter:blur(6px);
+  }
+  #hud .row{display:flex;gap:10px;align-items:center}
+  .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:inherit}
+  #shop{position:fixed;right:12px;top:12px;width:320px;max-width:calc(100% - 40px);background:var(--panel);padding:12px;border-radius:10px}
+  .shop-item{display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-radius:8px}
+  .small{font-size:13px;color:var(--muted)}
+  #footerPanel{position:fixed;left:12px;bottom:12px;background:var(--panel);padding:10px;border-radius:10px}
+  .stat{margin-right:12px}
+  .skin-preview{width:36px;height:36px;border-radius:6px;display:inline-block;vertical-align:middle;margin-right:8px}
+  @media(max-width:420px){#shop{width:270px}}
+</style>
+</head>
+<body>
+<div id="gameWrap">
+  <canvas id="game"></canvas>
+  <div id="hud">
+    <div class="row">
+      <div><strong>💰</strong> <span id="money">0</span></div>
+      <div class="stat small">⛏ <span id="dmg">1</span></div>
+      <div class="stat small">🌙 <span id="idle">0</span>/s</div>
+      <div class="stat small">🔁 Prestige x<span id="prestigeMul">1</span></div>
+      <button id="toShop" class="btn">Shop</button>
+    </div>
+  </div>
+
+  <div id="shop" style="display:none">
+    <h3>Mine Shop</h3>
+    <div class="small">Ores & Upgrades</div>
+    <div id="shopItems"></div>
+    <hr />
+    <div style="margin-top:8px">
+      <button id="prestigeBtn" class="btn">Prestige (Reset for multiplier)</button>
+      <button id="closeShop" class="btn">Close</button>
+    </div>
+  </div>
+
+  <div id="footerPanel">
+    <span class="small">Rock: <span id="rockType">Stone</span></span>
+    <span class="small">HP: <span id="rockHP">0</span>/<span id="rockMax">0</span></span>
+    <span class="small">Pick skin: <span id="skinName">Basic</span></span>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
