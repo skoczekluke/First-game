@@ -1,25 +1,14 @@
-// Idle Pickaxe Miner — Deluxe (Glossy Pickaxe + Crack SFX)
-// Integrated by Nova — pickaxe animation + embedded crack sound (base64)
 
+// Idle Pickaxe Miner — Full Deluxe Build
+// Includes glossy pickaxe animation, particles, skins, shop, prestige, offline idle
 (() => {
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
-  let W = canvas.width = window.innerWidth;
-  let H = canvas.height = window.innerHeight;
+  let W = canvas.width = window.innerWidth, H = canvas.height = window.innerHeight;
 
-  // storage
-  const KEY = 'idle_miner_v2_state';
+  const KEY = 'idle_miner_full_state_v1';
   let state = JSON.parse(localStorage.getItem(KEY) || 'null') || {
-    money: 0,
-    dmg: 1,
-    idle: 0,
-    rockIndex: 0,
-    rockHP: null,
-    rockMax: null,
-    skinsOwned: ['Basic'],
-    skin: 'Basic',
-    prestige: 0,
-    lastTick: Date.now()
+    money:0,dmg:1,idle:0,rockIndex:0,rockHP:null,rockMax:null,skinsOwned:['Basic'],skin:'Basic',prestige:0,lastTick:Date.now()
   };
 
   const ORES = [
@@ -38,211 +27,50 @@
     {name:'Crystal', cost:2500, color:'#7be3ff'}
   ];
 
-  // embedded crack WAV base64
-  const crackBase64 = "data:audio/wav;base64,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";
-
-  // audio element
-  const crackAudio = new Audio(crackBase64);
+  // base64 embedded crack (fallback) and external load path
+  const crackEmbedded = "data:audio/wav;base64,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";
+  let crackAudio = new Audio(crackEmbedded);
   crackAudio.volume = 0.8;
 
-  function save(){ state.lastTick = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); }
+  function save() { state.lastTick = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); }
 
-  function ensureRock(){ 
-    if (state.rockMax == null) {
-      const o = ORES[state.rockIndex] || ORES[0];
-      state.rockMax = Math.round(o.hp * Math.pow(1.4, state.rockIndex));
-      state.rockHP = state.rockMax;
-    }
-  }
+  function ensureRock() { if (state.rockMax == null) { const o = ORES[state.rockIndex]; state.rockMax = Math.round(o.hp * Math.pow(1.4, state.rockIndex)); state.rockHP = state.rockMax; } }
   ensureRock();
 
-  // offline accrual
-  (function applyOffline(){
-    const now = Date.now();
-    const elapsed = Math.floor((now - (state.lastTick || now))/1000);
-    if (elapsed > 0) { state.money += state.idle * elapsed; }
-  })();
+  (function applyOffline(){ const now = Date.now(); const elapsed = Math.floor((now - (state.lastTick || now))/1000); if (elapsed>0) state.money += state.idle * elapsed; })();
 
   // UI refs
-  const moneyEl = document.getElementById('money');
-  const dmgEl = document.getElementById('dmg');
-  const idleEl = document.getElementById('idle');
-  const shopPanel = document.getElementById('shop');
-  const shopItems = document.getElementById('shopItems');
-  const toShopBtn = document.getElementById('toShop');
-  const closeShopBtn = document.getElementById('closeShop');
-  const prestigeBtn = document.getElementById('prestigeBtn');
-  const rockTypeEl = document.getElementById('rockType');
-  const rockHPEl = document.getElementById('rockHP');
-  const rockMaxEl = document.getElementById('rockMax');
-  const skinNameEl = document.getElementById('skinName');
-  const prestigeMulEl = document.getElementById('prestigeMul');
+  const moneyEl = document.getElementById('money'), dmgEl = document.getElementById('dmg'), idleEl = document.getElementById('idle');
+  const shopPanel = document.getElementById('shop'), shopItems = document.getElementById('shopItems');
+  const toShopBtn = document.getElementById('toShop'), closeShopBtn = document.getElementById('closeShop'), prestigeBtn = document.getElementById('prestigeBtn');
+  const rockTypeEl = document.getElementById('rockType'), rockHPEl = document.getElementById('rockHP'), rockMaxEl = document.getElementById('rockMax');
+  const skinNameEl = document.getElementById('skinName'), prestigeMulEl = document.getElementById('prestigeMul');
 
-  // particles
   const particles = [];
-  function spawnParticles(x,y,color,count=12){
-    for(let i=0;i<count;i++){ particles.push({ x,y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.5)*6, life:40+Math.random()*30, color }); }
-  }
+  function spawnParticles(x,y,color,count=12){ for(let i=0;i<count;i++) particles.push({x,y,vx:(Math.random()-0.5)*6,vy:(Math.random()-1.5)*6,life:40+Math.random()*30,color}); }
 
-  // pickaxe swing animation state
-  let swing = 0; // 0..1 animation progress
-  let swingActive = false;
-  let swingStrength = 1;
+  let swing=0,swingActive=false,swingStrength=1;
+  function prestigeMultiplier(){return 1 + state.prestige*0.2;}
 
-  function prestigeMultiplier() { return 1 + state.prestige*0.2; }
+  function onHit(power){ const mul = prestigeMultiplier(); const dmg = power * (state.dmg||1); state.rockHP -= dmg; spawnParticles(W/2,H/2,'#fff',8); try{ crackAudio.currentTime = 0; crackAudio.volume = Math.min(1,0.6 + power*0.05); crackAudio.play(); }catch(e){} if (state.rockHP<=0){ const ore=ORES[state.rockIndex]; const baseReward=ore.reward; const reward=Math.round(baseReward * Math.pow(1.15, state.rockIndex) * mul); state.money += reward; try{ crackAudio.currentTime = 0; crackAudio.volume = 1.0; crackAudio.play(); }catch(e){} spawnParticles(W/2,H/2,'#ffd87a',30); state.rockIndex = Math.min(state.rockIndex+1, ORES.length-1); state.rockMax = Math.round((ORES[state.rockIndex].hp) * Math.pow(1.4, state.rockIndex)); state.rockHP = state.rockMax; } save(); }
 
-  function onHit(power){
-    const mul = prestigeMultiplier();
-    const dmg = power * (state.dmg || 1);
-    state.rockHP -= dmg;
-    spawnParticles(W/2, H/2, '#fff', 8);
-    // play a short light hit using volume reduce
-    try{ crackAudio.currentTime = 0; crackAudio.volume = Math.min(1, 0.6 + power*0.05); crackAudio.play(); }catch(e){}
-    if (state.rockHP <= 0){
-      const ore = ORES[state.rockIndex] || ORES[0];
-      const baseReward = ore.reward;
-      const reward = Math.round(baseReward * Math.pow(1.15, state.rockIndex) * mul);
-      state.money += reward;
-      // bigger crack sound
-      try{ crackAudio.currentTime = 0; crackAudio.volume = 1.0; crackAudio.play(); }catch(e){}
-      spawnParticles(W/2, H/2, '#ffd87a', 30);
-      state.rockIndex = Math.min(state.rockIndex + 1, ORES.length - 1);
-      state.rockMax = Math.round((ORES[state.rockIndex].hp) * Math.pow(1.4, state.rockIndex));
-      state.rockHP = state.rockMax;
-    }
-    save();
-  }
+  // input
+  let tStart=null; canvas.addEventListener('touchstart',e=>{tStart=e.touches[0];}); canvas.addEventListener('touchend',e=>{ if(!tStart) return; const t=e.changedTouches[0]; const dx=t.clientX-tStart.clientX; const dy=t.clientY-tStart.clientY; const dist=Math.sqrt(dx*dx+dy*dy); if(dist>30){ const power=Math.min(8, Math.floor(dist/18)+1); swingStrength=Math.min(2.5,0.9+power*0.25); startSwing(); onHit(power);} else { swingStrength=0.9; startSwing(); onHit(1);} tStart=null; });
+  let mDown=false,mStart=null; canvas.addEventListener('mousedown',e=>{mDown=true;mStart=e;}); canvas.addEventListener('mouseup',e=>{ if(!mStart) return; const dx=e.clientX-mStart.clientX; const dy=e.clientY-mStart.clientY; const dist=Math.sqrt(dx*dx+dy*dy); if(dist>30){ const power=Math.min(8, Math.floor(dist/18)+1); swingStrength=Math.min(2.5,0.9+power*0.25); startSwing(); onHit(power);} else { swingStrength=0.9; startSwing(); onHit(1);} mDown=false; mStart=null; });
 
-  // input handling (touch/mouse)
-  let tStart = null;
-  canvas.addEventListener('touchstart', e => { tStart = e.touches[0]; });
-  canvas.addEventListener('touchend', e => { if (!tStart) return; const t = e.changedTouches[0]; const dx = t.clientX - tStart.clientX; const dy = t.clientY - tStart.clientY; const dist = Math.sqrt(dx*dx + dy*dy); if (dist > 30) { const power = Math.min(8, Math.floor(dist/18)+1); swingStrength = Math.min(2.5, 0.9 + power*0.25); startSwing(); onHit(power); } else { swingStrength = 0.9; startSwing(); onHit(1); } tStart = null; });
+  function startSwing(){ swing=0; swingActive=true; }
 
-  let mDown=false, mStart=null;
-  canvas.addEventListener('mousedown', e => { mDown=true; mStart=e; });
-  canvas.addEventListener('mouseup', e => { if (!mStart) return; const dx = e.clientX - mStart.clientX; const dy = e.clientY - mStart.clientY; const dist = Math.sqrt(dx*dx + dy*dy); if (dist > 30) { const power = Math.min(8, Math.floor(dist/18)+1); swingStrength = Math.min(2.5, 0.9 + power*0.25); startSwing(); onHit(power); } else { swingStrength = 0.9; startSwing(); onHit(1); } mDown=false; mStart=null; });
+  function buildShop(){ shopItems.innerHTML=''; const dmgUpgradeCost=Math.round(20 * Math.pow(1.6, state.dmg-1)); const li1=document.createElement('div'); li1.className='shop-item'; li1.innerHTML=`<div>Upgrade Pickaxe +1 (cost ${dmgUpgradeCost})</div><div><button class="btn" id="buyDmg">Buy</button></div>`; shopItems.appendChild(li1); document.getElementById('buyDmg').onclick=()=>{ if(state.money>=dmgUpgradeCost){ state.money-=dmgUpgradeCost; state.dmg++; save(); updateUI(); buildShop(); } else alert('Not enough money'); }; const idleCost=Math.round(50 * Math.pow(2, state.idle)); const li2=document.createElement('div'); li2.className='shop-item'; li2.innerHTML=`<div>Hire Miner +1 (cost ${idleCost})</div><div><button class="btn" id="buyIdle">Buy</button></div>`; shopItems.appendChild(li2); document.getElementById('buyIdle').onclick=()=>{ if(state.money>=idleCost){ state.money-=idleCost; state.idle++; save(); updateUI(); buildShop(); } else alert('Not enough money'); }; const skinHeader=document.createElement('div'); skinHeader.className='small'; skinHeader.textContent='Skins'; shopItems.appendChild(skinHeader); SKINS.forEach(s=>{ const owned=state.skinsOwned.includes(s.name); const div=document.createElement('div'); div.className='shop-item'; div.innerHTML=`<div><span class="skin-preview" style="background:${s.color}"></span>${s.name} ${owned ? '(Owned)' : ''}</div><div><button class="btn buy-skin" data-name="${s.name}" ${owned ? 'disabled' : ''}>${owned ? 'Owned' : 'Buy '+s.cost}</button></div>`; shopItems.appendChild(div); }); Array.from(document.querySelectorAll('.buy-skin')).forEach(btn=>{ btn.onclick=()=>{ const name=btn.dataset.name; const sdata=SKINS.find(x=>x.name===name); if(!sdata) return; if(state.skinsOwned.includes(name)) return alert('You own it'); if(state.money>=sdata.cost){ state.money-=sdata.cost; state.skinsOwned.push(name); state.skin=name; save(); updateUI(); buildShop(); } else alert('Not enough money'); }; }); const oresHeader=document.createElement('div'); oresHeader.className='small'; oresHeader.textContent='Ores'; shopItems.appendChild(oresHeader); ORES.forEach((o,i)=>{ const cost=Math.round(o.reward * Math.pow(3, i) * 0.5); const div=document.createElement('div'); div.className='shop-item'; div.innerHTML=`<div>${o.name} (reward ${o.reward})</div><div><button class="btn buy-ore" data-index="${i}">Warp (${cost})</button></div>`; shopItems.appendChild(div); }); Array.from(document.querySelectorAll('.buy-ore')).forEach(btn=>{ btn.onclick=()=>{ const idx=parseInt(btn.dataset.index,10); const cost=Math.round(ORES[idx].reward * Math.pow(3, idx) * 0.5); if(state.money>=cost){ state.money-=cost; state.rockIndex=idx; state.rockMax=Math.round((ORES[state.rockIndex].hp) * Math.pow(1.4, state.rockIndex)); state.rockHP=state.rockMax; save(); updateUI(); buildShop(); } else alert('Not enough money'); }; }); }
 
-  function startSwing(){ swing = 0; swingActive = true; }
+  function doPrestige(){ if(!confirm('Prestige will reset money, upgrades, and ores for a permanent multiplier. Continue?')) return; state.prestige++; state.money=0; state.dmg=1; state.idle=0; state.rockIndex=0; state.rockMax=null; state.rockHP=null; state.skinsOwned=['Basic']; state.skin='Basic'; save(); updateUI(); buildShop(); }
 
-  // shop building
-  function buildShop(){
-    shopItems.innerHTML = '';
-    const dmgUpgradeCost = Math.round(20 * Math.pow(1.6, state.dmg-1));
-    const li1 = document.createElement('div'); li1.className='shop-item';
-    li1.innerHTML = `<div>Upgrade Pickaxe +1 (cost ${dmgUpgradeCost})</div><div><button class="btn" id="buyDmg">Buy</button></div>`;
-    shopItems.appendChild(li1);
-    document.getElementById('buyDmg').onclick = ()=> { if (state.money >= dmgUpgradeCost){ state.money -= dmgUpgradeCost; state.dmg++; save(); updateUI(); buildShop(); } else alert('Not enough money'); };
-
-    const idleCost = Math.round(50 * Math.pow(2, state.idle));
-    const li2 = document.createElement('div'); li2.className='shop-item';
-    li2.innerHTML = `<div>Hire Miner +1 (cost ${idleCost})</div><div><button class="btn" id="buyIdle">Buy</button></div>`;
-    shopItems.appendChild(li2);
-    document.getElementById('buyIdle').onclick = ()=> { if (state.money >= idleCost){ state.money -= idleCost; state.idle++; save(); updateUI(); buildShop(); } else alert('Not enough money'); };
-
-    const skinHeader = document.createElement('div'); skinHeader.className='small'; skinHeader.textContent = 'Skins';
-    shopItems.appendChild(skinHeader);
-    SKINS.forEach(s=>{
-      const owned = state.skinsOwned.includes(s.name);
-      const div = document.createElement('div'); div.className='shop-item';
-      div.innerHTML = `<div><span class="skin-preview" style="background:${s.color}"></span>${s.name} ${owned ? '(Owned)' : ''}</div>
-        <div><button class="btn buy-skin" data-name="${s.name}" ${owned ? 'disabled' : ''}>${owned ? 'Owned' : 'Buy '+s.cost}</button></div>`;
-      shopItems.appendChild(div);
-    });
-    Array.from(document.querySelectorAll('.buy-skin')).forEach(btn=>{ btn.onclick = ()=>{ const name = btn.dataset.name; const sdata = SKINS.find(x=>x.name===name); if (!sdata) return; if (state.skinsOwned.includes(name)) return alert('You own it'); if (state.money >= sdata.cost){ state.money -= sdata.cost; state.skinsOwned.push(name); state.skin = name; save(); updateUI(); buildShop(); } else alert('Not enough money'); }; });
-
-    const oresHeader = document.createElement('div'); oresHeader.className='small'; oresHeader.textContent='Ores';
-    shopItems.appendChild(oresHeader);
-    ORES.forEach((o,i)=>{ const cost = Math.round(o.reward * Math.pow(3, i) * 0.5); const div = document.createElement('div'); div.className='shop-item'; div.innerHTML = `<div>${o.name} (reward ${o.reward})</div><div><button class="btn buy-ore" data-index="${i}">Warp (${cost})</button></div>`; shopItems.appendChild(div); });
-    Array.from(document.querySelectorAll('.buy-ore')).forEach(btn=>{ btn.onclick = ()=>{ const idx = parseInt(btn.dataset.index,10); const cost = Math.round(ORES[idx].reward * Math.pow(3, idx) * 0.5); if (state.money >= cost){ state.money -= cost; state.rockIndex = idx; state.rockMax = Math.round((ORES[state.rockIndex].hp) * Math.pow(1.4, state.rockIndex)); state.rockHP = state.rockMax; save(); updateUI(); buildShop(); } else alert('Not enough money'); }; });
-  }
-
-  function doPrestige(){ if (!confirm('Prestige will reset money, upgrades, and ores for a permanent multiplier. Continue?')) return; state.prestige++; state.money = 0; state.dmg = 1; state.idle = 0; state.rockIndex = 0; state.rockMax = null; state.rockHP = null; state.skinsOwned = ['Basic']; state.skin = 'Basic'; save(); updateUI(); buildShop(); }
-
-  toShopBtn.onclick = ()=> { shopPanel.style.display='block'; buildShop(); updateUI(); };
-  closeShopBtn.onclick = ()=> { shopPanel.style.display='none'; updateUI(); };
+  toShopBtn.onclick = ()=>{ shopPanel.style.display='block'; buildShop(); updateUI(); };
+  closeShopBtn.onclick = ()=>{ shopPanel.style.display='none'; updateUI(); };
   prestigeBtn.onclick = ()=> doPrestige();
 
-  function updateUI(){ moneyEl.textContent = Math.floor(state.money); dmgEl.textContent = state.dmg; idleEl.textContent = state.idle; rockTypeEl.textContent = (ORES[state.rockIndex]||ORES[0]).name; rockHPEl.textContent = Math.floor(state.rockHP || 0); rockMaxEl.textContent = Math.floor(state.rockMax || 0); skinNameEl.textContent = state.skin; prestigeMulEl.textContent = (1 + state.prestige*0.2).toFixed(2); }
+  function updateUI(){ moneyEl.textContent=Math.floor(state.money); dmgEl.textContent=state.dmg; idleEl.textContent=state.idle; rockTypeEl.textContent=(ORES[state.rockIndex]||ORES[0]).name; rockHPEl.textContent=Math.floor(state.rockHP||0); rockMaxEl.textContent=Math.floor(state.rockMax||0); skinNameEl.textContent=state.skin; prestigeMulEl.textContent=(1+state.prestige*0.2).toFixed(2); }
 
-  // draw glossy pickaxe
-  function drawPickaxe(cx, cy, r, angle, skinColor){
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(angle);
-    // handle / shaft
-    ctx.fillStyle = '#5a3b29';
-    ctx.fillRect(-r*0.05, 10, r*0.9, r*0.14); // handle
-    // grip
-    ctx.fillStyle = '#3a2a20';
-    ctx.fillRect(r*0.6, 10, r*0.1, r*0.14);
-    // head - glossy metal
-    ctx.beginPath();
-    ctx.fillStyle = skinColor || '#ffb86b';
-    ctx.moveTo(-r*0.1, -r*0.2);
-    ctx.lineTo(r*0.9, -r*0.6);
-    ctx.lineTo(r*0.9, r*0.6);
-    ctx.lineTo(-r*0.1, r*0.2);
-    ctx.closePath();
-    ctx.fill();
-    // shine
-    ctx.beginPath();
-    const grad = ctx.createLinearGradient(-r*0.1,-r*0.6,r*0.9,r*0.6);
-    grad.addColorStop(0,'rgba(255,255,255,0.35)');
-    grad.addColorStop(0.6,'rgba(255,255,255,0.05)');
-    ctx.fillStyle = grad;
-    ctx.moveTo(-r*0.05, -r*0.15);
-    ctx.quadraticCurveTo(r*0.5, -r*0.5, r*0.85, 0);
-    ctx.lineTo(r*0.85, 6);
-    ctx.quadraticCurveTo(r*0.4, -r*0.05, -r*0.05, 6);
-    ctx.fill();
-    ctx.restore();
-  }
+  // draw glossy pickaxe and rock + particles
+  function drawPickaxe(cx,cy,r,angle,skinColor){ ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle); ctx.fillStyle = '#5a3b29'; ctx.fillRect(-r*0.05,10,r*0.9,r*0.14); ctx.fillStyle='#3a2a20'; ctx.fillRect(r*0.6,10,r*0.1,r*0.14); ctx.beginPath(); ctx.fillStyle=skinColor||'#ffb86b'; ctx.moveTo(-r*0.1,-r*0.2); ctx.lineTo(r*0.9,-r*0.6); ctx.lineTo(r*0.9,r*0.6); ctx.lineTo(-r*0.1,r*0.2); ctx.closePath(); ctx.fill(); const grad=ctx.createLinearGradient(-r*0.1,-r*0.6,r*0.9,r*0.6); grad.addColorStop(0,'rgba(255,255,255,0.35)'); grad.addColorStop(0.6,'rgba(255,255,255,0.05)'); ctx.fillStyle=grad; ctx.moveTo(-r*0.05,-r*0.15); ctx.quadraticCurveTo(r*0.5,-r*0.5,r*0.85,0); ctx.lineTo(r*0.85,6); ctx.quadraticCurveTo(r*0.4,-r*0.05,-r*0.05,6); ctx.fill(); ctx.restore(); }
 
-  // main draw function
-  function draw(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    ctx.clearRect(0,0,W,H);
-    // background
-    const grd = ctx.createLinearGradient(0,0,0,H);
-    grd.addColorStop(0,'#07101a'); grd.addColorStop(1,'#071827');
-    ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
-
-    const cx = W/2, cy = H/2; const r = Math.min(180, Math.min(W,H)*0.26);
-    // rock
-    const ore = ORES[state.rockIndex] || ORES[0];
-    const rockCol = {'Stone':'#666','Copper':'#8b5a2b','Iron':'#9fa6ad','Gold':'#f5c542','Diamond':'#7ef0ff','Mythic':'#c67cff'}[ore.name] || '#666';
-    ctx.beginPath(); ctx.fillStyle = rockCol; ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
-    // cracks
-    const pct = state.rockHP / state.rockMax;
-    ctx.strokeStyle = `rgba(0,0,0,${0.5 + (1-pct)*0.9})`; ctx.lineWidth = 4;
-    ctx.beginPath();
-    for(let i=0;i<6;i++){ const a1 = Math.PI*2*(i/6); const a2 = a1 + (Math.random()-0.5)*0.4; ctx.moveTo(cx + Math.cos(a1)*r*0.2, cy + Math.sin(a1)*r*0.2); ctx.lineTo(cx + Math.cos(a2)*(r*0.9*(0.6 + (1-pct)*0.4)), cy + Math.sin(a2)*(r*0.9*(0.6 + (1-pct)*0.4))); } ctx.stroke();
-
-    // pickaxe animation (swing)
-    if (swingActive) { swing += 0.06 * swingStrength; if (swing >= 1) { swing = 0; swingActive=false; } }
-    const swingAngle = Math.sin(swing * Math.PI) * (-1.2 * swingStrength);
-
-    // skin color
-    const skinColor = (SKINS.find(s=>s.name===state.skin) || SKINS[0]).color || '#ffb86b';
-    drawPickaxe(cx - r*0.2, cy - r*0.1, r*0.9, swingAngle, skinColor);
-
-    // particles
-    for(let i=particles.length-1;i>=0;i--){ const p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.25; p.life--; ctx.globalAlpha = Math.max(0, p.life/60); ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1; if (p.life <= 0) particles.splice(i,1); }
-
-    updateUI();
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-
-  // autosave tick
-  setInterval(()=> { state.money += state.idle; save(); }, 1000);
-
-  window.addEventListener('resize', ()=> { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-
-  // ensure initial
-  function ensureInit(){ if (!state.rockMax){ state.rockMax = Math.round((ORES[state.rockIndex].hp) * Math.pow(1.4, state.rockIndex)); state.rockHP = state.rockMax; } save(); updateUI(); }
-  ensureInit();
-
-})();
+  function draw(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; ctx.clearRect(0,0,W,H); const grd = ctx.createLinearGradient(0,0,0,H); grd.addColorStop(0,'#07101a'); grd.addColorStop(1,'#071827'); ctx.fillStyle = grd; ctx.fillRect(0,0,W,H); const cx = W/2, cy = H/2; const r = Math.min(180, Math.min(W,H)*0.26); const ore = ORES[state.rockIndex]||ORES[0]; const rockCol = {{'Stone':'#666','Copper':'#8b5a2b','Iron':'#9fa6ad','Gold':'#f5c542','Diamond':'#7ef0ff','Mythic':'#c67cff'}}[ore.name]||'#666'; ctx.beginPath(); ctx.fillStyle = rockCol; ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill(); const pct = state.rockHP / state.rockMax; ctx.strokeStyle = `rgba(0,0,0,${0.5 + (1-pct)*0.9})`; ctx.lineWidth = 4; ctx.beginPath(); for(let i=0;i<6;i++){ const a1 = Math.PI*2*(i/6); const a2 = a1 + (Math.random()-0.5)*0.4; ctx.moveTo(cx + Math.cos(a1)*r*0.2, cy + Math.sin(a1)*r*0.2); ctx.lineTo(cx + Math.cos(a2)*(r*0.9*(0.6 + (1-pct)*0.4)), cy + Math.sin(a2)*(r*0.9*(0.6 + (1-pct)*0.4))); } ctx.stroke(); if(swingActive){ swing += 0.06 * swingStrength; if(swing >= 1){ swing = 0; swingActive=false; } } const swingAngle = Math.sin(swing * Math.PI) * (-1.2 * swingStrength); const skinColor = (SKINS.find(s=>s.name===state.skin) || SKINS[0]).color || '#ffb86b'; drawPickaxe(cx - r*0.2, cy - r*0.1, r*0.9, swingAngle, skinColor); for(let i=particles.length-1;i>=0;i--){ const p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.25; p.life--; ctx.globalAlpha = Math.max(0, p.life/60); ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1; if(p.life <= 0) particles.splice(i,1); } updateUI(); requestAnimationFrame(draw); } draw(); setInterval(()=>{ state.money += state.idle; save(); }, 1000); window.addEventListener('resize', ()=>{ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }); function ensureInit(){ if(!state.rockMax){ state.rockMax = Math.round((ORES[state.rockIndex].hp) * Math.pow(1.4, state.rockIndex)); state.rockHP = state.rockMax; } save(); updateUI(); } ensureInit();
